@@ -7,7 +7,9 @@ type Component =
 | string
 | Circle of Circle
 | Point of Point
-type Definition = {name: string; dims: Dims; components: Component list}
+
+type Name = string
+type Definition = {name: Name; dims: Dims; components: Component list}
 type Canvas = Canvas of Definition list * string
 
 let CANVAS_SZ = 400

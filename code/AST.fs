@@ -5,9 +5,9 @@ type Circle = {x: Point; y: int}
 type Dims = {x: int; y: int}
 type Component =
 | string
-| Circle
-| Point
-type Definition = {name: string; components: Component list}
-type Grammar = Definition list
+| Circle of Circle
+| Point of Point
+type Definition = {name: string; dims: Dims; components: Component list}
+type Canvas = Canvas of Definition list * string
 
 let CANVAS_SZ = 400

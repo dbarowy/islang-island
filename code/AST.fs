@@ -10,6 +10,6 @@ type Component =
 
 type Definition = {name: string; dims: Dims; components: Component list}
 
-type Canvas = Canvas of Definition list
+type Canvas = Definition list
 
 let CANVAS_SZ = 400

@@ -2,11 +2,14 @@ module Evaluator
 open AST
 
 let evalName(name,scale) = ""
-let evalCircle (point,radius, scale: Dims):string = 
-    "   <circle cx =\"" +  (((point.x)*scale.w*scale.h) |> string) + "\"" +
-    "cy =\"" +  ((point.y*scale.w*scale.h) |> string) + "\"" +
-    "r =\"" + ((radius*scale.w*scale.h) |> string) + "\"" +
-    "stroke= \"green\" stroke-width=\"4\" fill =\"white\"/>\n"
+let evalCircle (point,radius, scale: Dims):string =
+    let mininimum = min scale.w scale.h
+    let width = scale.w/2
+    let height = scale.h/2
+    "   <circle cx =\"" +  (((point.x)+width+height) |> string) + "\"" +
+    " cy =\"" +  ((point.y+width+height) |> string) + "\"" +
+    " r =\"" + ((radius*(mininimum/5)) |> string) + "\"" +
+    " stroke= \"black\" stroke-width=\"4\" fill =\"" + canvas_color + "\"/>\n"
 
 let evalComponent (shape: Component, scale: Dims): string =
     match (shape, scale) with
@@ -28,6 +31,6 @@ let rec eval (canvas: Canvas): string  =
     let csz = CANVAS_SZ |> string
     "<svg width=\"" + csz + "\" height=\"" + csz + "\"" +
     " xmlns=\"http://www.w3.org/2000/svg\"" +
-    " xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n" +
+    " xmlns:xlink=\"http://www.w3.org/1999/xlink\" style=\"background-color:" + canvas_color+"\">" + "\n" +
     (evalCanvas canvas)
     + "</svg>\n"

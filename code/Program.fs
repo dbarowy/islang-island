@@ -1,5 +1,4 @@
 ﻿open Parser
-open Evaluator
 open System.IO
 
 [<EntryPoint>]
@@ -18,12 +17,11 @@ let main argv : int =
 
     (* try to parse what they gave us *)
     let ast_maybe = parse input do_debug
-
-    (* try to evaluate what we parsed... or not *)
     match ast_maybe with
-    | Some ast ->
-        eval ast Map.empty |> ignore
+    | Some canvas_ast ->
+        printfn "%A" canvas_ast
         0
-    | None     ->
+    | _ ->
         printfn "Invalid program."
         1
+    

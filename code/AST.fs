@@ -1,6 +1,7 @@
 module AST
 
 type Point = {x: int; y: int}
+
 type Dims = {w: int; h: int}
 
 type Component =

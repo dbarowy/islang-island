@@ -13,4 +13,4 @@ type Definition = {name: string; dims: Dims; components: Component list}
 type Canvas = Canvas of Definition list
 
 let CANVAS_SZ = 400
-let canvas_color = "antiquewhite"
+let canvas_color = "navajowhite"

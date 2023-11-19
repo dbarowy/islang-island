@@ -1,5 +1,4 @@
 module Evaluator 
-open System
 open AST
 
 let evalName(name,scale) = ""
@@ -21,9 +20,9 @@ let rec evalDefinition (def: Definition): string =
 
 let rec evalCanvas(canvas: Canvas): string = 
     match canvas with
-    | [] -> ""
+    | Canvas [] -> ""
     //| [x] -> evalDefinition (x)
-    | x::xs-> evalDefinition (x) + evalCanvas(xs)
+    | Canvas (x::xs)-> evalDefinition (x) + evalCanvas(Canvas xs)
 
 let rec eval (canvas: Canvas): string  = 
     let csz = CANVAS_SZ |> string

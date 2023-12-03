@@ -20,7 +20,8 @@ let main argv : int =
     let ast_maybe = parse input do_debug
     match ast_maybe with
     | Some canvas_ast ->
-        printfn "%s" (eval canvas_ast)
+        // printfn "%s" (eval canvas_ast)
+        printfn "%A" canvas_ast
         0
     | _ ->
         printfn "Invalid program. \n Usage: dotnet run <file> > [filename].svg"

@@ -4,9 +4,11 @@ open Combinator
 open AST
 
 (*
-    TODO:
-    More components: Mountain, Direction, Position, Orientation    
-    Add comments to functions
+    TODO (Ammar):
+    Add comments to functions in parser
+    Help out in Evaluator
+    Fix so that variables can have underscores
+    Debug example-3 why doesn't work
 *)
 
 let pdefn,pdefnImpl = recparser()
@@ -58,13 +60,68 @@ let pcircle: Parser<Component> = pright
  *)
 let pnamechar: Parser<char> = pletter <|> pdigit <!> "pnamechar"
 
-let pname: Parser<Component> = pseq
+let pname: Parser<string> = pseq
                                 pletter 
                                 (pmany0 pnamechar |>> stringify)
-                                (fun (c: char, s: string) -> (string c) + s)
-                            |>> (fun v -> Name v) <!> "pname"
+                                (fun (c: char, s: string) -> (string c) + s) <!> "pname"
 
-let pcomponent: Parser<Component> = pright pws1 (pcircle <|> pname) <!> "pcomponent"
+let pdirection: Parser<Direction> = (pad
+                                        ((pstr "right") <|> (pstr "left") <|> (pstr "top") <|> (pstr "bottom")
+                                        <|> (pstr "top-right") <|> (pstr "top-left") <|> (pstr "bottom-right") <|> (pstr "bottom-left"))
+                                    ) |>> fun x ->
+                                        match x with
+                                        | "right" -> Right
+                                        | "left" -> Left
+                                        | "top" -> Top
+                                        | "bottom" -> Bottom
+                                        | "bottom-left" -> BottomLeft
+                                        | "bottom-right" -> BottomRight
+                                        | "top-right" -> TopRight
+                                        | "top-left" -> TopLeft
+                                        // default for error but won't happen
+                                        | _ -> Top
+                                                                
+
+let pposition: Parser<Position> = pseq
+                                    (pleft (pad pnum) (pstr "units to the"))
+                                    pdirection
+                                    (fun (u, dir) -> Position(dir, u))
+
+let protation: Parser<Rotation> = pright 
+                                    (pad (pstr "rotated"))
+                                    pnum
+                                    |>> fun x -> Rotation(x)
+
+let pplacement: Parser<Placement> = pseq
+                                        (pmany0 pposition)
+                                        (pmany0 protation)
+                                        (fun (pos_list, dir_list) -> 
+                                            match (pos_list, dir_list) with
+                                            | ([],[]) -> Placement(Position(Top, 0), Rotation(0))
+                                            | (x::xs,[]) -> Placement(x, Rotation(0))
+                                            | ([],y::ys) -> Placement(Position(Top, 0), y)
+                                            | (x::xs, y::ys) -> Placement(x,y)
+                                        )
+
+let pisland: Parser<string> = pstr "Island"
+let pmountain: Parser<string> = pstr "Mountain"
+let pcastle: Parser<string> = pstr "Castle"
+let pcloud: Parser<string> = pstr "Cloud"
+
+let pcompound: Parser<Component> = pseq
+                                        (pisland <|> pmountain <|> pcastle <|> pcloud <|> pname)
+                                        pplacement
+                                        (fun (name, placement) ->
+                                            match name with
+                                            | "Island" -> Island(placement)
+                                            | "Mountain" -> Mountain(placement)
+                                            | "Castle" -> Castle(placement)
+                                            | "Cloud" -> Cloud(placement)
+                                            // will never happen but to keep f# happy
+                                            | _ -> Island(placement)
+                                            )
+
+let pcomponent: Parser<Component> = pright pws1 (pcircle <|> pcompound) <!> "pcomponent"
 
 let pcomponents: Parser<Component list> = pmany1
                                             (pleft pcomponent pnl)
@@ -77,7 +134,7 @@ let pdims: Parser<Dims> = pseq
                         <!> "pdims"
 
 pdefnImpl := pseq
-                (pseq pname (pright pws1 pdims) (fun (x,y) -> (string x,y))) 
+                (pseq pname (pright pws1 pdims) (fun (x,y) -> (x,y))) 
                 (pcomponents) 
                 (fun ((x,y),z) -> {name=x; dims=y; components=z})
                 <!> "pdefn"

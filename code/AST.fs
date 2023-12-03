@@ -14,15 +14,19 @@ type Direction =
 | BottomRight
 | BottomLeft
 
-type Position = Direction * int
+type Position = Position of Direction * int
 
-type Rotation = int
+type Rotation = Rotation of int
 
-type Placement = Position * Rotation
+type Placement = Placement of Position * Rotation
 
 type Component =
 | Name of string
-| Circle of Point * int * Placement
+| Circle of Point * int
+| Island of Placement
+| Mountain of Placement
+| Castle of Placement
+| Cloud of Placement
 
 type Definition = {name: string; dims: Dims; components: Component list}
 

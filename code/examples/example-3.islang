@@ -1,0 +1,6 @@
+cloud_castle 50x200 is:
+    Cloud 1 unit at the center
+    Castle 1 unit at the top
+newland 400x400 is:
+    cloud_castle, 1 unit at the top-right
+    mountains 4 units at the left rotated 270

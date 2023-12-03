@@ -1,0 +1,7 @@
+Three_clouds 50x100 is:
+    Cloud 1 unit at the center
+    Cloud 1 unit at the top-right
+    Cloud 1 unit at top-left
+island_clouds of size 200x120 is:
+    Three_clouds 1 unit at the top
+    island

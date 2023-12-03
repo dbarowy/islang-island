@@ -3,11 +3,16 @@ module Parser
 open Combinator
 open AST
 
+(*
+    TODO:
+    More components: Mountain, Direction, Position, Orientation    
+    Add comments to functions
+*)
+
 let pdefn,pdefnImpl = recparser()
 
 (* my_ws
- *   Consider any non-newline whitespace or
- *   a comment to be whitespace
+ *   Consider any non-newline whitespace to be whitespace
  *)
 let my_ws = (pwsNoNL0 |>> (fun _ -> true))
 
@@ -71,11 +76,6 @@ let pdims: Parser<Dims> = pseq
                             (fun (x,y) -> {w=x; h=y})
                         <!> "pdims"
 
-(* pexpr
- *   Parses an arbitrary expression.  In general, tries
- *   to parse the most distinguisable/most complex thing
- *   first.
- *)
 pdefnImpl := pseq
                 (pseq pname (pright pws1 pdims) (fun (x,y) -> (string x,y))) 
                 (pcomponents) 

@@ -1,7 +1,7 @@
 module EvalLandscape
 open AST
 
-let evalCloud(name: string, scale: Dims)(env: Map<string, Dims * string>): string =
+let evalCloud(place: Placement, scale: Dims)(env: Map<string, Dims * string>): string =
     """
     <svg xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:svg="http://www.w3.org/2000/svg" id="svg4956" viewBox="0 0 """ + (scale.w*scale.h|>string) + """400.09" version="1.0">
   <g id="layer1" transform="translate(-204.17 -180.96)">
@@ -9,7 +9,7 @@ let evalCloud(name: string, scale: Dims)(env: Map<string, Dims * string>): strin
   </g>
 </svg>"""
 
-let evalMountain(name: string, scale: Dims)(env: Map<string, Dims * string>): string =
+let evalMountain(place: Placement, scale: Dims)(env: Map<string, Dims * string>): string =
        """<svg
     xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
@@ -44,7 +44,7 @@ let evalMountain(name: string, scale: Dims)(env: Map<string, Dims * string>): st
 </svg
 >"""
 
-let evalIsland(name: string, scale: Dims)(env: Map<string, Dims * string>): string =
+let evalIsland(place: Placement, scale: Dims)(env: Map<string, Dims * string>): string =
    """<svg xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:svg="http://www.w3.org/2000/svg" id="svg2" viewBox="0 0 """ + (scale.w+scale.h|>string) + """500.4" version="1.1">
   <g id="layer1" transform="translate(-134.38 -367.11)">
     <g id="g2844" stroke="#fff">
@@ -59,7 +59,7 @@ let evalIsland(name: string, scale: Dims)(env: Map<string, Dims * string>): stri
   </g>
 </svg>"""
 
-let evalCastle(name: string, scale: Dims)(env: Map<string, Dims * string>): string =
+let evalCastle(place: Placement, scale: Dims)(env: Map<string, Dims * string>): string =
         """
     <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
@@ -141,7 +141,7 @@ let evalName(name: string, outer_scale: Dims)(env: Map<string, Dims * string>): 
             printfn "Undefined variable."
             exit 1
 
-let evalCircle (point,radius, scale: Dims):string =
+let evalCircle (point,radius, scale: Dims): string =
     let mininimum = min scale.w scale.h
     let width = scale.w/2
     let height = scale.h/2

@@ -16,6 +16,10 @@ let rec evalComponents
         let eval1 = match x with
                     | Name (name) -> EvalLandscape.evalName (name, scale) env 
                     | Circle (point, radius) -> EvalLandscape.evalCircle(point, radius, scale)
+                    | Island (placement)  -> EvalLandscape.evalIsland(placement, scale)
+                    | Mountain (placement) -> EvalLandscape.evalMountain(placement, scale)
+                    | Castle (placement) -> EvalLandscape.evalCastle(placement, scale)
+                    | Cloud (placement) -> EvalLandscape.evalCloud(placement, scale)
                     // temp hack for now. to be fixed when evaluator is implemented
                     | _ -> ""
         let eval2 = evalComponents xs scale env

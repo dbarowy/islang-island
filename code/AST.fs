@@ -20,13 +20,17 @@ type Rotation = Rotation of int
 
 type Placement = Placement of Position * Rotation
 
+type PlacementType =
+| RelativePlacement of Placement
+| AbsPlacement of Point
+
 type Component =
 | Name of string
 | Circle of Point * int
-| Island of Placement
-| Mountain of Placement
-| Castle of Placement
-| Cloud of Placement
+| Island of PlacementType
+| Mountain of PlacementType
+| Castle of PlacementType
+| Cloud of PlacementType
 
 type Definition = {name: string; dims: Dims; components: Component list}
 

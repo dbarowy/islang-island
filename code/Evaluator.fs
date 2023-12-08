@@ -21,7 +21,7 @@ let rec evalComponents
                     | Castle (placement) -> EvalLandscape.evalCastle(placement, scale)
                     | Cloud (placement) -> EvalLandscape.evalCloud(placement, scale)
                     // temp hack for now. to be fixed when evaluator is implemented
-                    | _ -> ""
+                    // | _ -> ""
         let eval2 = evalComponents xs scale env
         eval1 + eval2
 
@@ -55,3 +55,7 @@ let eval (canvas: Canvas): string  =
     " xmlns:xlink=\"http://www.w3.org/1999/xlink\" style=\"background-color:" + canvas_color+"\">" + "\n" +
     (evalCanvas canvas Map.empty)
     + "</svg>\n"
+
+//not-built
+let makeCoordinates(canvas: Canvas): Canvas =
+    failwith "not implemented"

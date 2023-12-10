@@ -87,30 +87,41 @@ let pposition: Parser<Position> = pseq
                                     pdirection
                                     (fun (u, dir) -> Position(dir, u))
 
-let protation: Parser<Rotation> = pright 
+let protation: Parser<int> = pright 
                                     (pad (pstr "rotated"))
                                     pnum
-                                    |>> fun x -> Rotation(x)
+                                    //|>> fun x //-> Rotation(x)
 
-let pplacement: Parser<Placement> = pseq
-                                        (pmany0 pposition)
-                                        (pmany0 protation)
-                                        (fun (pos_list, dir_list) -> 
-                                            match (pos_list, dir_list) with
-                                            | ([],[]) -> Placement(Position(Top, 0), Rotation(0))
-                                            | (x::xs,[]) -> Placement(x, Rotation(0))
-                                            | ([],y::ys) -> Placement(Position(Top, 0), y)
-                                            | (x::xs, y::ys) -> Placement(x,y)
-                                        )
+// let pplacement: Parser<Placement> = pseq
+//                                         (pmany0 pposition)
+//                                         (pmany0 protation)
+//                                         (fun (pos_list, dir_list) -> 
+//                                             match (pos_list, dir_list) with
+//                                             | ([],[]) -> Placement(Position(Top, 0), Rotation(0))
+//                                             | (x::xs,[]) -> Placement(x, Rotation(0))
+//                                             | ([],y::ys) -> Placement(Position(Top, 0), y)
+//                                             | (x::xs, y::ys) -> Placement(x,y)
+//                                         )
 
 let pisland: Parser<string> = pstr "Island"
 let pmountain: Parser<string> = pstr "Mountain"
 let pcastle: Parser<string> = pstr "Castle"
 let pcloud: Parser<string> = pstr "Cloud"
 
+let prelative: Parser<Placement> =  pseq
+                                                (pmany0 pposition)
+                                                (pmany0 protation)
+                                                (fun (pos_list, dir_list) -> 
+                                                    match (pos_list, dir_list) with
+                                                    | ([],[]) -> RelativePlacement(Position(Top, 0), 0)
+                                                    | (x::xs,[]) -> RelativePlacement(x, 0)
+                                                    | ([],y::ys) -> RelativePlacement(Position(Top, 0), y)
+                                                    | (x::xs, y::ys) -> RelativePlacement(x,y)
+                                                )
 let pcompound: Parser<Component> = pseq
                                         (pisland <|> pmountain <|> pcastle <|> pcloud <|> pname)
-                                        pplacement
+                                        prelative
+                                        //pplacement
                                         (fun (name, placement) ->
                                             match name with
                                             | "Island" -> Island(placement)

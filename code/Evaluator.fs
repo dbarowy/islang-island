@@ -20,11 +20,9 @@ let rec evalComponents
                     | Mountain (placement) -> EvalLandscape.evalMountain(placement, scale)
                     | Castle (placement) -> EvalLandscape.evalCastle(placement, scale)
                     | Cloud (placement) -> EvalLandscape.evalCloud(placement, scale)
-                    // temp hack for now. to be fixed when evaluator is implemented
-                    // | _ -> ""
         let eval2 = evalComponents xs scale env
         eval1 + eval2
-
+    | _ -> ""
 let evalDefinition
     (def: Definition)(env: Map<string, Dims * string>)
     : string * Map<string, Dims * string> =
@@ -56,6 +54,35 @@ let eval (canvas: Canvas): string  =
     (evalCanvas canvas Map.empty)
     + "</svg>\n"
 
-//not-built
+//ADDED NEW TRAVERSAL OF THE AST
+//CONVERTING RELATIVE TOP ABSOLUTE:
+
+let relativeToAbs(str: PlacementType): PlacementType =
+    {x = 100; y = 100} |> AbsPlacement
+
+let rec evalFirstComponents(components: Component list): Component list =
+    match components with
+        | [] -> []
+        | x::xs -> 
+            let eval1 = match x with
+                        | Name (name) -> Name (name)
+                        | Circle (point, radius) -> Circle(point, radius)
+                        | Island (placementType)  -> Island (relativeToAbs(placementType))
+                        | Mountain (placementType) -> Mountain (relativeToAbs(placementType))
+                        | Castle (placementType) -> Castle (relativeToAbs(placementType))
+                        | Cloud (placementType) -> Cloud (relativeToAbs(placementType))
+            [eval1]
+
+let evalFirstDefinition(def: Definition): Definition =
+    match def.name, def.dims, def.components with
+    | n,x,_ -> {name = n; dims = x ; components = (evalFirstComponents def.components)}
+
+let rec evalFirstCanvas(canvas: Canvas): Definition list =
+    match canvas with
+    | Canvas [] -> []
+    | Canvas [x] -> [evalFirstDefinition (x)]
+    | Canvas (x::xs)-> evalFirstCanvas(Canvas xs)
+
 let makeCoordinates(canvas: Canvas): Canvas =
+    (evalFirstCanvas canvas)
     failwith "not implemented"

@@ -61,22 +61,25 @@ let eval (canvas: Canvas): string  =
 
 
 
+// user can give in any of 8 directions in units between 1 and 3
 let relativeToAbsPos(dims: Dims)(pos: Position): Point =
-    let direction,units = match pos with Position (x,y) -> x,y
-    let diag_units = int (0.707 * float units)
 
-    let scaled_unit_x = int (dims.w / 3)
-    let scaled_unit_y = int (dims.h / 3)
+    let direction,units = match pos with Position (x,y) -> x, float y
 
-    match direction with
-    | Top -> {x=0; y=(- scaled_unit_y * units)}
-    | Bottom -> {x=0; y=(scaled_unit_y * units)}
-    | Left -> {x=(- scaled_unit_x*units); y=0}
-    | Right -> {x=(scaled_unit_x*units); y=0}
-    | TopLeft ->{x=(-scaled_unit_x*diag_units); y=(-scaled_unit_y*diag_units)} 
-    | TopRight ->{x=(scaled_unit_x*diag_units); y=(-scaled_unit_y*diag_units)} 
-    | BottomRight ->{x=(scaled_unit_x*diag_units); y=(scaled_unit_y*diag_units)} 
-    | BottomLeft ->{x=(-scaled_unit_x*diag_units); y=(scaled_unit_y*diag_units)} 
+    let scaled_unit_x = float dims.w / 6.0
+    let scaled_unit_y = float dims.h / 6.0
+
+    let tpoint = match direction with
+                    | Top -> {x=0; y= int (- scaled_unit_y * units)}
+                    | Bottom -> {x=0; y= int (scaled_unit_y * units)}
+                    | Left -> {x= int (- scaled_unit_x*units); y=0}
+                    | Right -> {x= int (scaled_unit_x*units); y=0}
+                    | TopLeft ->{x= int (-scaled_unit_x*units); y= int (-scaled_unit_y*units)} 
+                    | TopRight ->{x= int (scaled_unit_x*units); y= int (-scaled_unit_y*units)} 
+                    | BottomRight ->{x= int (scaled_unit_x*units); y= int (scaled_unit_y*units)} 
+                    | BottomLeft ->{x= int (-scaled_unit_x*units); y= int (scaled_unit_y*units)} 
+    
+    {x=int(3.0 * scaled_unit_x) + tpoint.x; y=int(3.0 * scaled_unit_y) + tpoint.y}
 
 
 

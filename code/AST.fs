@@ -21,7 +21,7 @@ type Placement =
 | AbsPlacement of Point * Dims * int
 
 type Component =
-| Name of string
+| Name of string * Placement
 | Circle of Point * int
 | Island of Placement
 | Mountain of Placement

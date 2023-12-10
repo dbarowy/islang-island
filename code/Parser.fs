@@ -129,7 +129,7 @@ let pcompound: Parser<Component> = pseq
                                             | "Castle" -> Castle(placement)
                                             | "Cloud" -> Cloud(placement)
                                             // will never happen but to keep f# happy
-                                            | _ -> Island(placement)
+                                            | _ -> Name(name, placement)
                                             )
 
 let pcomponent: Parser<Component> = pright pws1 (pcircle <|> pcompound) <!> "pcomponent"

@@ -85,7 +85,6 @@ let rec evalComponents
     | [] -> ""
     | x::xs -> 
         let eval1 = match x with
-                    //TODO combine rotation
                     | Circle (point, radius) -> evalCircle(point, radius, outer_scale)
 
                     | Island (inner_placement)  -> 
@@ -94,8 +93,7 @@ let rec evalComponents
                         evalIsland(combinePositions(outer_position,inner_position), outer_scale)
 
                     | Mountain (inner_placement) ->
-                        let inner_position, inner_scale, inner_rotation = 
-                            rtn_fields(inner_placement)
+                        let inner_position, inner_scale, inner_rotation = rtn_fields(inner_placement)
                         evalMountain(combinePositions(outer_position,inner_position), outer_scale)
 
                     | Castle (inner_placement) ->
@@ -117,7 +115,6 @@ let rec evalComponents
 
                             evalComponents ast newplacement env
 
-                            
                             else
                                 printfn "Undefined variable."
                                 exit 1

@@ -1,6 +1,6 @@
 TwoCircles 50x50 is:
-	circle point=(5,5) radius=5
-	circle point=(5,5) radius=3
+	circle point=(50,50) radius=30
+	circle point=(50,50) radius=20
 ThreeCircles 100x100 is:
 	TwoCircles 2 units to the right rotated 90
-	circle point=(10,10) radius=4
+	circle point=(100,100) radius=50

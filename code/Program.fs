@@ -11,6 +11,12 @@ let main argv : int =
 
     (* read in the input file *)
     let file = argv.[0]
+    if not (File.Exists(file)) then
+        printfn "Could not find the specified file"
+        printfn "Usage: dotnet run <file> [debug] > [filename].svg"
+        exit 1
+
+
     let input = File.ReadAllText file
 
     (* does the user want parser debugging turned on? *)
@@ -20,10 +26,11 @@ let main argv : int =
     let ast_maybe = parse input do_debug
     match ast_maybe with
     | Some canvas_ast ->
-        //call make coordinates first:
+        // printfn "%A" ast_maybe
         // let first_pass, _ = makeCoordinates canvas_ast Map.empty
         // printfn "%A" first_pass
         printfn "%s" (eval canvas_ast)
+        // eval canvas_ast |> ignore
         0
     | _ ->
         printfn "Invalid program. \n Usage: dotnet run <file> > [filename].svg"

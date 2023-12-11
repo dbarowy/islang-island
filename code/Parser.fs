@@ -5,10 +5,10 @@ open AST
 
 (*
     TODO (Ammar):
-    Add comments to functions in parser
-    Help out in Evaluator
-    Fix so that variables can have underscores
-    Debug example-3 why doesn't work
+    1) Add comments to functions in parser
+    2) Fig bug in example-3: Castle is being interpreted as a definition (name)
+    instead of a primitive
+    3) Film video presi
 *)
 
 let pdefn,pdefnImpl = recparser()
@@ -92,10 +92,10 @@ let protation: Parser<int> = pright
                                 pnum
                                 <!> "protation"
 
-let pisland: Parser<string> = pstr "Island"
-let pmountain: Parser<string> = pstr "Mountain"
-let pcastle: Parser<string> = pstr "Castle"
-let pcloud: Parser<string> = pstr "Cloud"
+let pisland: Parser<string> = pstr "Island "
+let pmountain: Parser<string> = pstr "Mountain "
+let pcastle: Parser<string> = pstr "Castle "
+let pcloud: Parser<string> = pstr "Cloud "
 
 let prelative: Parser<Placement> =  pseq
                                         (pmany0 pposition)

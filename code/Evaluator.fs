@@ -2,64 +2,8 @@ module Evaluator
 open AST
 open EvalLandscape
 
-type Env = Map<string, Dims * string>
 
-// let combineScales(outer_scale: Dims, inner_scale: Dims): ? =
-// let combinePositions(outer_pos: Point, inner_pos: Point): ? =
-
-let rec evalComponents
-    (components: Component list)(scale: Dims)
-    (env: Map<string, Dims * string>)
-    : string =
-    match components with
-    | [] -> ""
-    | x::xs -> 
-        let eval1 = match x with
-                    //TODO: Name
-                    | Name (name, placement) -> evalName (name, scale) env 
-                    | Circle (point, radius) -> evalCircle(point, radius, scale)
-                    | Island (placement)  -> evalIsland(placement, scale)
-                    | Mountain (placement) -> evalMountain(placement, scale)
-                    | Castle (placement) -> evalCastle(placement, scale)
-                    | Cloud (placement) -> evalCloud(placement, scale)
-        let eval2 = evalComponents xs scale env
-        eval1 + eval2
-
-
-let evalDefinition
-    (def: Definition)(env: Map<string, Dims * string>)
-    : string * Map<string, Dims * string> =
-
-    match def.name, def.dims, def.components with
-    | _,_,[] -> ("",env)
-    | n,x,_ ->
-        let svg_str = evalComponents def.components x env
-        let env1 = env.Add(n, (x , svg_str))
-        svg_str, env1
-
-
-let rec evalCanvas(canvas: Canvas)(env: Map<string, Dims * string>): string = 
-    match canvas with
-    | Canvas [] -> ""
-    | Canvas [x] ->
-        let eval, env1 = evalDefinition (x)(env)
-        eval
-    | Canvas (x::xs)->
-        let _, env1 = evalDefinition (x) (env)
-        evalCanvas(Canvas xs)(env1)
-
-
-let eval (canvas: Canvas): string  = 
-    let csz = CANVAS_SZ |> string
-    "<svg width=\"" + csz + "\" height=\"" + csz + "\"" +
-    " xmlns=\"http://www.w3.org/2000/svg\"" +
-    " xmlns:xlink=\"http://www.w3.org/1999/xlink\" style=\"background-color:" + canvas_color+"\">" + "\n" +
-    (evalCanvas canvas Map.empty)
-    + "</svg>\n"
-
-//----------------------------------------------------------
-
-
+type Env = Map<string, Dims * Component list>
 
 // user can give in any of 8 directions in units between 1 and 3
 let relativeToAbsPos(dims: Dims)(pos: Position): Point =
@@ -102,14 +46,108 @@ let rec evalFirstComponents(dims: Dims)(components: Component list): Component l
                         | Cloud (placement) -> Cloud (relativeToAbs dims placement)
             eval1 :: (evalFirstComponents dims xs)
 
-let evalFirstDefinition(def: Definition): Definition =
+let evalFirstDefinition(def: Definition)(env: Env): Definition * Env =
     match def.name, def.dims, def.components with
-    | n,x,_ -> {name = n; dims = x ; components = (evalFirstComponents x def.components)}
+    | n, dim,_ -> 
+        let absComponents = evalFirstComponents dim def.components
+        let env1 = env.Add(n, (dim, absComponents))
+        {name = n; dims = dim ; components = absComponents}, env1
 
-let rec makeCoordinates(canvas: Canvas): Definition list =
+let rec makeCoordinates(canvas: Canvas)(env: Env): Definition list * Env =
     match canvas with
-        | Canvas [] -> []
-        | Canvas (x::xs)-> evalFirstDefinition(x) :: makeCoordinates(Canvas xs)
+        | Canvas [] -> [], env
+        | Canvas (x::xs)-> 
+            let def1, env1 = evalFirstDefinition x env
+            let def_rest, env2 = makeCoordinates(Canvas xs) env1
+            def1 :: def_rest, env2
 
-let firstPass(canvas: Canvas): Canvas =
-    Canvas (makeCoordinates canvas)
+//--------------------------------------------------------
+
+let combineScales(outer_scale: Dims, inner_scale: Dims): Dims =
+    inner_scale
+
+let combinePositions(outer_pos: Point, inner_pos: Point): Point =
+    {x=outer_pos.x+inner_pos.x; y=outer_pos.y+inner_pos.y}
+
+let rtn_fields (place: Placement) : Point*Dims*int =
+    match place with 
+        | AbsPlacement(u, y, z) -> u,y,z
+        | _ ->  {x= 0;y=0}, {w= 0;h=0}, 0
+
+let rec evalComponents
+    (components: Component list)(outer_placement: Placement)
+    (env: Env): string =
+
+    let outer_position,outer_scale, outer_rotation =
+        rtn_fields(outer_placement)
+    
+    match components with
+    | [] -> ""
+    | x::xs -> 
+        let eval1 = match x with
+                    //TODO combine rotation
+                    | Circle (point, radius) -> evalCircle(point, radius, outer_scale)
+
+                    | Island (inner_placement)  -> 
+                        let inner_position, inner_scale, inner_rotation = 
+                            rtn_fields(inner_placement)
+                        evalIsland(combinePositions(outer_position,inner_position), outer_scale)
+
+                    | Mountain (inner_placement) ->
+                        let inner_position, inner_scale, inner_rotation = 
+                            rtn_fields(inner_placement)
+                        evalMountain(combinePositions(outer_position,inner_position), outer_scale)
+
+                    | Castle (inner_placement) ->
+                        let inner_position, inner_scale, inner_rotation = 
+                            rtn_fields(inner_placement)
+                        evalCastle(combinePositions(outer_position,inner_position), outer_scale)
+
+                    | Cloud (inner_placement) ->
+                        let inner_position, inner_scale, inner_rotation = 
+                            rtn_fields(inner_placement)
+                        evalCloud(combinePositions(outer_position,inner_position), outer_scale)
+
+                    | Name (name, inner_placement) -> 
+                        if Map.containsKey name env then
+                            let dims, ast = env[name]
+                            let inner_position, inner_scale, inner_rotation = rtn_fields(inner_placement)
+                            let combined_position = combinePositions(outer_position, inner_position)
+                            let newplacement = AbsPlacement(combined_position, dims, inner_rotation)
+
+                            evalComponents ast newplacement env
+
+                            
+                            else
+                                printfn "Undefined variable."
+                                exit 1
+
+        let eval2 = evalComponents xs outer_placement env
+        eval1 + eval2
+
+
+let evalDefinition
+    (def: Definition)(placement: Placement)(env: Env)
+    : string * Env =
+
+    match def.name, def.dims, def.components with
+    | _,_,[] -> ("",env)
+    | n,x,_ ->
+        let svg_str = evalComponents def.components placement env
+        svg_str, env
+
+
+let eval (canvas: Canvas): string  = 
+    let pass, env = makeCoordinates canvas Map.empty
+    let last_def = List.head (List.rev pass)
+    let csz = CANVAS_SZ |> string
+    let abs_coordinates = AbsPlacement({x=0;y=0}, {w=400; h=400}, 0)
+    let out_str, _ = evalDefinition last_def abs_coordinates env
+
+    "<svg width=\"" + csz + "\" height=\"" + csz + "\"" +
+    " xmlns=\"http://www.w3.org/2000/svg\"" +
+    " xmlns:xlink=\"http://www.w3.org/1999/xlink\" style=\"background-color:" + canvas_color+"\">" + "\n" +
+    (out_str)
+    + "</svg>\n"
+
+//----------------------------------------------------------

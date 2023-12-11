@@ -21,9 +21,9 @@ let main argv : int =
     match ast_maybe with
     | Some canvas_ast ->
         //call make coordinates first:
-        printfn "%A" (canvas_ast)
-        printfn "%A" (firstPass canvas_ast)
-        //printfn "%A" canvas_ast
+        // let first_pass, _ = makeCoordinates canvas_ast Map.empty
+        // printfn "%A" first_pass
+        printfn "%s" (eval canvas_ast)
         0
     | _ ->
         printfn "Invalid program. \n Usage: dotnet run <file> > [filename].svg"

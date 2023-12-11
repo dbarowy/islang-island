@@ -1,7 +1,7 @@
 module EvalLandscape
 open AST
 
-let evalCloud(place: Placement, scale: Dims): string =
+let evalCloud(pos: Point, scale: Dims): string =
     """
     <svg xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:svg="http://www.w3.org/2000/svg" id="svg4956" viewBox="0 0 """ + (scale.w*scale.h|>string) + """400.09" version="1.0">
   <g id="layer1" transform="translate(-204.17 -180.96)">
@@ -9,7 +9,7 @@ let evalCloud(place: Placement, scale: Dims): string =
   </g>
 </svg>"""
 
-let evalMountain(place: Placement, scale: Dims): string =
+let evalMountain(pos: Point, scale: Dims): string =
        """<svg
     xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
@@ -44,7 +44,7 @@ let evalMountain(place: Placement, scale: Dims): string =
 </svg
 >"""
 
-let evalIsland(place: Placement, scale: Dims): string =
+let evalIsland(pos: Point, scale: Dims): string =
    """<svg xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:svg="http://www.w3.org/2000/svg" id="svg2" viewBox="0 0 """ + (scale.w+scale.h|>string) + """500.4" version="1.1">
   <g id="layer1" transform="translate(-134.38 -367.11)">
     <g id="g2844" stroke="#fff">
@@ -59,7 +59,7 @@ let evalIsland(place: Placement, scale: Dims): string =
   </g>
 </svg>"""
 
-let evalCastle(place: Placement, scale: Dims): string =
+let evalCastle(pos: Point, scale: Dims): string =
         """
     <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
@@ -131,21 +131,9 @@ let evalCastle(place: Placement, scale: Dims): string =
   </g>
 </svg>"""
 
-let evalName(name: string, outer_scale: Dims)(env: Map<string, Dims * string>): string =
-    let mod_name = ("Name \"" + name + "\"")
-    if Map.containsKey mod_name env then
-        let inner_scale, svg = env[mod_name]
-        // TODO: CHANGE THE SCALE HERE
-        svg
-        else
-            printfn "Undefined variable."
-            exit 1
 
 let evalCircle (point,radius, scale: Dims): string =
-    let mininimum = min scale.w scale.h
-    let width = scale.w/2
-    let height = scale.h/2
-    "   <circle cx =\"" +  (((point.x)+width+height) |> string) + "\"" +
-    " cy =\"" +  ((point.y+width+height) |> string) + "\"" +
-    " r =\"" + ((radius*(mininimum/5)) |> string) + "\"" +
+    "   <circle cx =\"" +  ((point.x) |> string) + "\"" +
+    " cy =\"" +  (point.y |> string) + "\"" +
+    " r =\"" + (radius |> string) + "\"" +
     " stroke= \"black\" stroke-width=\"4\" fill =\"" + canvas_color + "\"/>\n"

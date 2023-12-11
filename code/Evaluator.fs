@@ -16,12 +16,12 @@ let relativeToAbsPos(dims: Dims)(pos: Position): Point =
     let tpoint = match direction with
                     | Top -> {x=0; y= int (- scaled_unit_y * units)}
                     | Bottom -> {x=0; y= int (scaled_unit_y * units)}
-                    | Left -> {x= int (- scaled_unit_x*units); y=0}
-                    | Right -> {x= int (scaled_unit_x*units); y=0}
-                    | TopLeft ->{x= int (-scaled_unit_x*units); y= int (-scaled_unit_y*units)} 
-                    | TopRight ->{x= int (scaled_unit_x*units); y= int (-scaled_unit_y*units)} 
-                    | BottomRight ->{x= int (scaled_unit_x*units); y= int (scaled_unit_y*units)} 
-                    | BottomLeft ->{x= int (-scaled_unit_x*units); y= int (scaled_unit_y*units)} 
+                    | Left -> {x= int (- scaled_unit_x*units); y=0} //{x= int (- scaled_unit_x*units); y=0}
+                    | Right -> {x= int (- scaled_unit_x*units); y=0} //{x= int (scaled_unit_x*units); y=0}
+                    | TopLeft ->{x= int (scaled_unit_x*units); y= int (scaled_unit_y*units)} 
+                    | TopRight ->{x= int (-scaled_unit_x*units); y= int (scaled_unit_y*units)} 
+                    | BottomRight ->{x= int (- scaled_unit_x*units); y= int (-scaled_unit_y*units)} 
+                    | BottomLeft ->{x= int (scaled_unit_x*units); y= int (-scaled_unit_y*units)} 
     
     {x=int(3.0 * scaled_unit_x) + tpoint.x; y=int(3.0 * scaled_unit_y) + tpoint.y}
 

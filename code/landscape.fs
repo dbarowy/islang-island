@@ -3,14 +3,14 @@ open AST
 
 let evalCloud(pos: Point, scale: Dims): string =
     """
-    <svg xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:svg="http://www.w3.org/2000/svg" id="svg4956" viewBox="0 0 """ + (scale.w*scale.h|>string) + """400.09" version="1.0">
+    <svg xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:svg="http://www.w3.org/2000/svg" id="svg4956" viewBox=" """ + (pos.x |>string) + """ """+ (pos.y|>string) + """ """ + (scale.w*scale.h|>string) + """400.09" version="1.0">
   <g id="layer1" transform="translate(-204.17 -180.96)">
     <path id="path4952" stroke-linejoin="round" d="m410.68 194.38c-18.3-4.9-36.83 0.71-49.62 12.9-6.68-8.03-15.72-14.23-26.58-17.13-27.92-7.49-56.69 9.12-64.18 37.05-0.55 2.05-0.69 4.12-0.98 6.17-25.15-2.62-49.22 13.13-55.97 38.33-6.69 24.96 5.93 50.49 28.62 60.99-1.23 2.67-2.38 5.43-3.17 8.37-7.48 27.92 9.15 56.63 37.07 64.11 13.68 3.67 27.5 1.52 38.98-4.87 6.32 13.53 18.12 24.42 33.66 28.58 22.18 5.94 44.68-3.47 56.83-21.51 4.92 3.48 10.39 6.36 16.56 8.01 27.92 7.49 56.63-9.14 64.11-37.07 3.77-14.04 1.44-28.25-5.36-39.9 6.73-6.41 11.99-14.53 14.57-24.15 7.48-27.93-9.15-56.63-37.07-64.12-2.94-0.78-5.89-1.23-8.82-1.5 1.74-24.52-14.02-47.66-38.65-54.26z" stroke="#000" stroke-width="14.79" fill="navajowhite"/>
   </g>
 </svg>"""
 
 let evalMountain(pos: Point, scale: Dims): string =
-   """<svg
+       """<svg
     xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
     xmlns="http://www.w3.org/2000/svg"
@@ -22,7 +22,7 @@ let evalMountain(pos: Point, scale: Dims): string =
     xmlns:xlink="http://www.w3.org/1999/xlink"
     id="svg2"
     sodipodi:docname="gebergte.svg"
-    viewBox="0 0 """ + (5*(scale.w+scale.h)|>string) + """ 200.04"
+    viewBox=" """ + (pos.x |>string) + """ """+ (pos.y|>string) + """ """ + (5*(scale.w+scale.h)|>string) + """ 200.04"
     version="1.1"
     inkscape:version="0.48.2 r9819"
   >
@@ -45,7 +45,7 @@ let evalMountain(pos: Point, scale: Dims): string =
 >"""
 
 let evalIsland(pos: Point, scale: Dims): string =
-   """<svg xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:svg="http://www.w3.org/2000/svg" id="svg2" viewBox="0 0 """ + (scale.w+scale.h|>string) + """500.4" version="1.1">
+   """<svg xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:svg="http://www.w3.org/2000/svg" id="svg2" viewBox=" """ + (pos.x |>string) + """ """+ (pos.y|>string) + """ """  + (scale.w+scale.h|>string) + """500.4" version="1.1">
   <g id="layer1" transform="translate(-134.38 -367.11)">
     <g id="g2844" stroke="#fff">
       <path id="path2830" stroke= "black" stroke-width="3" fill="navajowhite" d="m139.65 687.44c13.64 8.5251 28.465 15.134 44.208 18.55 26.359 6.8282 53.551-0.38181 80.3 1.5058 13.819-1.4779 26.241 5.3691 39.689 6.1935 14.694 0.3496 29.575-1.2672 43.997 2.464 16.997 3.257 35.34 7.0121 51.78-0.60546 14.888-5.4115 27.406-16.018 38.159-27.338 7.0398-12.22-7.3407-22.319-17.257-26.485-20.264-11.809-43.043-18.259-64.677-27.023-21.374-7.9775-43.842-12.543-64.929-21.278-16.514-6.2532-34.585-3.5371-51.513-0.75466-26.744 5.5535-49.839 21.176-71.507 37.075-13.252 6.3779-29.947 14.227-32.014 30.554-0.0831 2.8232 1.24 5.7272 3.7651 7.1413z"/>
@@ -60,7 +60,7 @@ let evalIsland(pos: Point, scale: Dims): string =
 </svg>"""
 
 let evalCastle(pos: Point, scale: Dims): string =
-   """
+        """
     <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
    xmlns:cc="http://creativecommons.org/ns#"
@@ -75,7 +75,7 @@ let evalCastle(pos: Point, scale: Dims): string =
    version="1.1"
    inkscape:version="0.48.4 r9939"
    sodipodi:docname="New document 1"
-   viewBox ="0 0 """ + (2*(scale.w*scale.h)|>string) + """ 3000"
+   viewBox =" """ + (pos.x |>string) + """ """+ (pos.y|>string) + """ """  + (2*(scale.w*scale.h)|>string) + """ 3000"
   >
   <g
      inkscape:label="Layer 1"

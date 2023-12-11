@@ -90,22 +90,23 @@ ThreeCircles 100x100 is:
     TwoCircles
     circle point=(10,10) radius=4
 
-//E.g.3
-Three_clouds 50x100 is:
-    Cloud 1 unit at the center
-    Cloud 1 unit at the top-right
-    Cloud 1 unit at top-left
-island_clouds of size 200x120 is:
-    Three_clouds 1 unit at the top
-    island
+
+//E.g.2
+SmallMountain 200x200 is:
+    mountain
+ThreeMountains 1000x1000 is:
+    SmallMountain 1 units to the left
+    SmallMountain
+    SmallMountain 3 units to the right
+
     
 //E.g.3
-cloud_castle 50x200 is:
-    Cloud 1 unit at the center
-    Castle 1 unit at the top
-newland 400x400 is:
-    cloud_castle, 1 unit at the top-right
-    mountains 4 units at the left rotated 270
+CloudCastle 50x200 is:
+    cloud
+    castle 1 units to the top
+Newland 400x400 is:
+    CloudCastle 1 units to the top-right
+    mountain 4 units to the left rotated 270
 \end{verbatim}
 \begin{figure}[H]
         \centering
@@ -172,46 +173,44 @@ We define a partial BNF syntax for our language below:
 \subsection*{Semantics}
 
 \begin{itemize}
-    \item[(i)] We think of the primitives in our language as the set of geometric primitives we provide the user like points, circles (here we are using the terminology of the SVG package). We wish to enable the user to draw primitives using absolute coordinates on a standard-sized canvas if they wish to, which will then be made relative once an instance of this object is contextualized after it is placed inside another component. This feature is not yet reflected in our language syntax of semantics for all the primitives (only for circles) for brevity. But we will add this at some point. Another extension to this would be to enable coordinate selection through I/O (clicking points on a blank canvas using the cursor, for example).
+    \item[(i)] We think of the primitives in our language as the set of landscape primitives we provide the user like trees, mountains, castles, etc. We wish to enable the user to draw primitives using relative placement and scaling that is a function of the bonding box or ``definition" of an object. Simply stated, an object in our language is just a box that contains multiple primitives or other objects. For example, looking at the second example program we provide, \verb|SmallMoutain| is an object that is comprised just of one mountain in the center of a box of \verb|200x200| and \verb|ThreeMountains| is another such object that contains three copies of \verb|SmallMountain|.
+    
     \item[(ii)] As stated previously, our \textit{values} are components and they are combined by being placed into each other with relativistic spatial specifications. The \textit{evaluation} of our program involves recursively unpacking this tree of nested components are drawing the primitives in the leaf components within the dimension bounds defined by the parent components.
 
     \item[(ii)] Some of the F\# Algebraic Data Types we will use are the following:
 
     \begin{verbatim}
-    type Point = {x: int; y: int}
+type Point = {x: int; y: int}
 
-    type Dims = {w: int; h: int}
-    
-    type Direction =
-    | Top
-    | Right
-    | Bottom
-    | Left
-    | TopRight
-    | TopLeft
-    | BottomRight
-    | BottomLeft
-    
-    type Position = Direction * int
-    
-    type Rotation = int
-    
-    type Placement = Position * Rotation
-    
-    type Component =
-    | Name of string
-    | Circle of Point * int * Placement
-    | Island of Placement
-    | Mountain of Placement
-    | Castle of Placement
-    | Cloud of Placement
-    
-    type Definition = {name: string; dims: Dims; components: Component list}
-    
-    type Canvas = Canvas of Definition list
-    
-    let CANVAS_SZ = 400
-    let canvas_color = "navajowhite"
+type Dims = {w: int; h: int}
+
+type Direction =
+| Top
+| Right
+| Bottom
+| Left
+| TopRight
+| TopLeft
+| BottomRight
+| BottomLeft
+
+type Position = Position of Direction * int
+
+type Placement =
+| RelativePlacement of Position * int
+| AbsPlacement of Point * Dims * int
+
+type Component =
+| Name of string * Placement
+| Circle of Point * int
+| Island of Placement
+| Mountain of Placement
+| Castle of Placement
+| Cloud of Placement
+
+type Definition = {name: string; dims: Dims; components: Component list}
+
+type Canvas = Canvas of Definition list
 
     \end{verbatim}
 
@@ -235,20 +234,17 @@ We define a partial BNF syntax for our language below:
 
 \begin{TAB}{|c|c|c|c|c|}{|c|c|c|c|}% (rows,min,max)[tabcolsep]{columns}{rows}
     \textbf{Syntax} & \textbf{Abstract Syntax} & \textbf{Type} & \textbf{Prec. \& Assoc} & \textbf{Meaning}\\
-        \makecell{definition dims is: \\cloud 1 unit at\\ the top rotated 90} & \makecell{Component = \\name\\circle\\castle\\mountain\\cloud\\island} & Component & n/a & \makecell{Component either evaluates\\ a name (a newly defined definition)\\ as string of a new form\\ or the primitive pre-built\\ type circle, castle,\\ mountain, island, or island.}\\
-      \makecell{TwoCircles 50x50 is:\\  components} & \makecell{Definition of \\{name: string;\\ dims: Dims;\\components: Component list}} & Definition & n/a & \makecell{This type defines a new variable\\ in this case TwoCircles,\\ that evaluates the variable\\ name(combining form) as a string,\\ the scale of the dimensions Dims\\ as a record of two integers\\ and the list of\\ components with\\ the primitive shapes like\\ circle, castle etc.}\\
-  \makecell{definition:\\   components\\definition:\\   components} & Canvas & Definition List & top to bottom & \makecell{The definitions get parsed\\ top to bottom,\\ and using a dictionary,\\ it builds SVG strings,\\ concatenating each component,\\ to each definition.\\ At the end of the definition list,\\ it then draws the last\\ SVG string which is a compilation of\\ every definition's SVG\\ string}\\
+        \makecell{definition dims is: \\cloud 1 unit at\\ the top rotated 90} & \makecell{Component = \\name\\circle\\castle\\mountain\\cloud\\island} & Component & n/a & \makecell{Component either evaluates\\ a name (a newly defined definition)\\ as string of a new form\\ or the primitive pre-built\\ type circle, castle,\\ mountain, island, or island.}\\ \makecell{TwoCircles 50x50 is:\\  components} & \makecell{Definition of \\name: string;\\ dims: Dims;\\components: Component list} & Definition & n/a & \makecell{This type defines a new variable\\ in this case TwoCircles,\\ that evaluates the variable\\ name(combining form) as a string,\\ the scale of the dimensions Dims\\ as a record of two integers\\ and the list of\\ components with\\ the primitive shapes like\\ circle, castle etc.}\\ \makecell{definition:\\   components\\definition:\\   components} & Canvas & Definition List & top to bottom & \makecell{The definitions get parsed\\ top to bottom,\\ and using a dictionary,\\ it builds SVG strings,\\ concatenating each component,\\ to each definition.\\ At the end of the definition list,\\ it then draws the last\\ SVG string which is a compilation of\\ every definition's SVG\\ string}\\
 \end{TAB}
-\end{center}
-\subsection*{Remaining Work:}
-Evaluator:
-\begin{enumerate}
-    \item [1.] Add and implement the  features of direction, position, orientation, and placement, for the newly added primitive forms.
-    \item [2.] Add comments
-\end{enumerate}
-Project Presentation:
 
-\subsection*{Q4:}
-  \item[(vi)]  
+Project Presentation link: 
+
+\subsection*{Remaining Work:}
+\begin{enumerate}
+    \item Add more combined forms such as shrubs, buildings, landmasses, roads, bridges, etc.
+    \item Implement the ability to rotate in the evaluator.
+\end{enumerate}
+
+
 \end{itemize}
 \end{document}

@@ -138,7 +138,7 @@ let eval (canvas: Canvas): string  =
     let pass, env = makeCoordinates canvas Map.empty
     let last_def = List.head (List.rev pass)
     let csz = CANVAS_SZ |> string
-    let abs_coordinates = AbsPlacement({x=0;y=0}, {w=400; h=400}, 0)
+    let abs_coordinates = AbsPlacement({x=0;y=0}, {w=1000; h=1000}, 0)
     let out_str, _ = evalDefinition last_def abs_coordinates env
 
     "<svg width=\"" + csz + "\" height=\"" + csz + "\"" +

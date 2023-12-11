@@ -26,11 +26,7 @@ let main argv : int =
     let ast_maybe = parse input do_debug
     match ast_maybe with
     | Some canvas_ast ->
-        //printfn "%A" ast_maybe
-        let first_pass, _ = makeCoordinates canvas_ast Map.empty
-        // printfn "%A" first_pass
-        // printfn "%s" (eval canvas_ast)
-        eval canvas_ast |> ignore
+        printfn "%s" (eval canvas_ast)
         0
     | _ ->
         printfn "Invalid program. \n Usage: dotnet run <file> > [filename].svg"

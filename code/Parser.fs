@@ -92,10 +92,10 @@ let protation: Parser<int> = pright
                                 pnum
                                 <!> "protation"
 
-let pisland: Parser<string> = pstr "Island "
-let pmountain: Parser<string> = pstr "Mountain "
-let pcastle: Parser<string> = pstr "Castle "
-let pcloud: Parser<string> = pstr "Cloud "
+let pisland: Parser<string> = pstr "island" <!> "pisland"
+let pmountain: Parser<string> = pstr "mountain" <!> "pmountain"
+let pcastle: Parser<string> = pstr "castle" <!> "pcastle"
+let pcloud: Parser<string> = pstr "cloud" <!> "pcloud"
 
 let prelative: Parser<Placement> =  pseq
                                         (pmany0 pposition)
@@ -107,16 +107,17 @@ let prelative: Parser<Placement> =  pseq
                                             | ([],y::ys) -> RelativePlacement(Position(Top, 0), y)
                                             | (x::xs, y::ys) -> RelativePlacement(x,y)
                                         ) <!> "prelative"
+
 let pcompound: Parser<Component> = pseq
-                                        (pisland <|> pmountain <|> pcastle <|> pcloud <|> pname)
+                                        (pad (pisland <|> pmountain <|> pcastle <|> pcloud <|> pname))
                                         prelative
                                         //pplacement
                                         (fun (name, placement) ->
                                             match name with
-                                            | "Island" -> Island(placement)
-                                            | "Mountain" -> Mountain(placement)
-                                            | "Castle" -> Castle(placement)
-                                            | "Cloud" -> Cloud(placement)
+                                            | "ssland" -> Island(placement)
+                                            | "mountain" -> Mountain(placement)
+                                            | "castle" -> Castle(placement)
+                                            | "cloud" -> Cloud(placement)
                                             // will never happen but to keep f# happy
                                             | _ -> Name(name, placement)
                                             ) <!> "pcompound"

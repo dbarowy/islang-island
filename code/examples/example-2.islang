@@ -1,6 +1,6 @@
-ThreeMountains 50x100 is:
-    Mountain
-    Mountain 1 units to the right
-    Mountain 1 units to the left
-IslandMountains 200x120 is:
-    ThreeMountains
+SmallMountain 200x200 is:
+    mountain
+ThreeMountains 1000x1000 is:
+    SmallMountain 1 units to the left
+    SmallMountain
+    SmallMountain 3 units to the right

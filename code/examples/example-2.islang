@@ -1,6 +1,6 @@
-SmallMountain 200x200 is:
+SmallMountain 25x25 is:
     mountain
-ThreeMountains 1000x1000 is:
-    SmallMountain 1 units to the left
+ThreeMountains 30x30 is:
+    SmallMountain 60 units to the left
     SmallMountain
-    SmallMountain 3 units to the right
+    SmallMountain 50 units to the right

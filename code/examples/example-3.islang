@@ -1,6 +1,10 @@
-CloudCastle 50x200 is:
+CloudCastle1 30x30 is:
+    cloud 10 units to the right
+CloudCastle 30x30 is:
     cloud
-    castle 1 units to the top
-Newland 400x400 is:
-    CloudCastle 1 units to the top-right
-    mountain 4 units to the left rotated 270
+    castle 10 units to the right
+    mountain 60 units to the bottom
+Newland 50x50 is:
+    CloudCastle 10 units to the top-right
+    CloudCastle1
+    mountain

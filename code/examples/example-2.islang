@@ -1,6 +1,5 @@
 SmallMountain 25x25 is:
     mountain
 ThreeMountains 30x30 is:
-    SmallMountain 60 units to the left
     SmallMountain
     SmallMountain 50 units to the right

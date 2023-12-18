@@ -177,7 +177,9 @@ We define a partial BNF syntax for our language below:
     
     \item[(ii)] As stated previously, our \textit{values} are components and they are combined by being placed into each other with relativistic spatial specifications. The \textit{evaluation} of our program involves recursively unpacking this tree of nested components are drawing the primitives in the leaf components within the dimension bounds defined by the parent components.
 
-    \item[(ii)] Some of the F\# Algebraic Data Types we will use are the following:
+    \item[(iii)] As shown in textbf{example 2}, in our language users need at least two definitions to draw the map. So the initial definitions like SmallMountain are composed of components like mountains. This is because the last definition in this case ThreeMountains, which the user defines, can only use earlier definitions like SmallMountain as variables.
+
+    \item[(iv)] Some of the F\# Algebraic Data Types we will use are the following:
 
     \begin{verbatim}
 type Point = {x: int; y: int}
